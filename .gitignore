@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # My files
 assignments/
 
@@ -5,6 +6,22 @@ assignments/
 __pycache__/
 *.py[codz]
 *.class
+=======
+<<<<<<< HEAD
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[codz]
+*$py.class
+=======
+# My files
+assignments/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[codz]
+*.class
+>>>>>>> a3efdec (First files)
+>>>>>>> e48be7f (First files)
 
 # C extensions
 *.so
@@ -198,7 +215,15 @@ cython_debug/
 .pypirc
 
 # Cursor
+<<<<<<< HEAD
 #  Cursor is an AI-powered code editor.  specifies files/directories to
+=======
+<<<<<<< HEAD
+#  Cursor is an AI-powered code editor. `.cursorignore` specifies files/directories to
+=======
+#  Cursor is an AI-powered code editor.  specifies files/directories to
+>>>>>>> a3efdec (First files)
+>>>>>>> e48be7f (First files)
 #  exclude from AI features like autocomplete and code analysis. Recommended for sensitive data
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
