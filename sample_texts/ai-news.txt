@@ -1,0 +1,56 @@
+A smarter way for large language models to think about hard problems
+This new technique enables LLMs to dynamically adjust the amount of computation they use for reasoning, based on the difficulty of the question.
+Adam Zewe | MIT News
+Publication Date: December 4, 2025
+
+To make large language models (LLMs) more accurate when answering harder questions, researchers can let the model spend more time thinking about potential solutions.
+
+But common approaches that give LLMs this capability set a fixed computational budget for every problem, regardless of how complex it is. This means the LLM might waste computational resources on simpler questions or be unable to tackle intricate problems that require more reasoning.
+
+To address this, MIT researchers developed a smarter way to allocate computational effort as the LLM solves a problem. Their method enables the model to dynamically adjust its computational budget based on the difficulty of the question and the likelihood that each partial solution will lead to the correct answer.
+
+The researchers found that their new approach enabled LLMs to use as little as one-half the computation as existing methods, while achieving comparable accuracy on a range of questions with varying difficulties. In addition, their method allows smaller, less resource-intensive LLMs to perform as well as or even better than larger models on complex problems.
+
+By improving the reliability and efficiency of LLMs, especially when they tackle complex reasoning tasks, this technique could reduce the energy consumption of generative AI systems and enable the use of LLMs in more high-stakes and time-sensitive applications.
+
+“The computational cost of inference has quickly become a major bottleneck for frontier model providers, and they are actively trying to find ways to improve computational efficiency per user queries. For instance, the recent GPT-5.1 release highlights the efficacy of the ‘adaptive reasoning’ approach our paper proposes. By endowing the models with the ability to know what they don’t know, we can enable them to spend more compute on the hardest problems and most promising solution paths, and use far fewer tokens on easy ones. That makes reasoning both more reliable and far more efficient,” says Navid Azizan, the Alfred H. and Jean M. Hayes Career Development Assistant Professor in the Department of Mechanical Engineering and the Institute for Data, Systems, and Society (IDSS), a principal investigator of the Laboratory for Information and Decision Systems (LIDS), and the senior author of a paper on this technique.
+
+Azizan is joined on the paper by lead author Young-Jin Park, a LIDS/MechE graduate student; Kristjan Greenewald, a research scientist in the MIT-IBM Watson AI Lab; Kaveh Alim, an IDSS graduate student; and Hao Wang, a research scientist at the MIT-IBM Watson AI Lab and the Red Hat AI Innovation Team. The research is being presented this week at the Conference on Neural Information Processing Systems.
+
+Computation for contemplation
+
+A recent approach called inference-time scaling lets a large language model take more time to reason about difficult problems.
+
+Using inference-time scaling, the LLM might generate multiple solution attempts at once or explore different reasoning paths, then choose the best ones to pursue from those candidates.
+
+A separate model, known as a process reward model (PRM), scores each potential solution or reasoning path. The LLM uses these scores to identify the most promising ones.     
+
+Typical inference-time scaling approaches assign a fixed amount of computation for the LLM to break the problem down and reason about the steps.
+
+Instead, the researchers’ method, known as instance-adaptive scaling, dynamically adjusts the number of potential solutions or reasoning steps based on how likely they are to succeed, as the model wrestles with the problem.
+
+“This is how humans solve problems. We come up with some partial solutions and then decide, should I go further with any of these, or stop and revise, or even go back to my previous step and continue solving the problem from there?” Wang explains.
+
+To do this, the framework uses the PRM to estimate the difficulty of the question, helping the LLM assess how much computational budget to utilize for generating and reasoning about potential solutions.
+
+At every step in the model’s reasoning process, the PRM looks at the question and partial answers and evaluates how promising each one is for getting to the right solution. If the LLM is more confident, it can reduce the number of potential solutions or reasoning trajectories to pursue, saving computational resources.
+
+But the researchers found that existing PRMs often overestimate the model’s probability of success.
+
+Overcoming overconfidence
+
+“If we were to just trust current PRMs, which often overestimate the chance of success, our system would reduce the computational budget too aggressively. So we first had to find a way to better calibrate PRMs to make inference-time scaling more efficient and reliable,” Park says.
+
+The researchers introduced a calibration method that enables PRMs to generate a range of probability scores rather than a single value. In this way, the PRM creates more reliable uncertainty estimates that better reflect the true probability of success.
+
+With a well-calibrated PRM, their instance-adaptive scaling framework can use the probability scores to effectively reduce computation while maintaining the accuracy of the model’s outputs.
+
+When they compared their method to standard inference-time scaling approaches on a series of mathematical reasoning tasks, it utilized less computation to solve each problem while achieving similar accuracy.
+
+“The beauty of our approach is that this adaptation happens on the fly, as the problem is being solved, rather than happening all at once at the beginning of the process,” says Greenewald.
+
+In the future, the researchers are interested in applying this technique to other applications, such as code generation and AI agents. They are also planning to explore additional uses for their PRM calibration method, like for reinforcement learning and fine-tuning.
+
+“Human employees learn on the job — some CEOs even started as interns — but today’s agents remain largely static pieces of probabilistic software. Work like this paper is an important step toward changing that: helping agents understand what they don’t know and building mechanisms for continual self-improvement. These capabilities are essential if we want agents that can operate safely, adapt to new situations, and deliver consistent results at scale,” says Akash Srivastava, director and chief architect of Core AI at IBM Software, who was not involved with this work.
+
+This work was funded, in part, by the MIT-IBM Watson AI Lab, the MIT-Amazon Science Hub, the MIT-Google Program for Computing Innovation, and MathWorks. 
