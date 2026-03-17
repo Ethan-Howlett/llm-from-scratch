@@ -1,45 +1,73 @@
 import torch
+from gpt_model import LayerNorm, FeedForward, TransformerBlock, GPTModel, generate_text_simple, generate_text_simple_cached
 
-from attention import SelfAttention, CausalAttention, MultiHeadAttention
-
-
-def assert_close(a: torch.Tensor, b: torch.Tensor, tol: float = 1e-5) -> None:
-    m = float((a - b).abs().max().item()) if a.numel() else 0.0
-    assert m <= tol, f"Expected close tensors, max abs diff={m}, tol={tol}"
-
-
-def test_shapes():
-    torch.manual_seed(0)
-    x = torch.randn(2, 5, 16)
-
-    # y = SimpleSelfAttention().forward(x)
-    # assert y.shape == x.shape
-
-    y = CausalAttention(d_in=16, d_out=16, context_length=5, dropout=0.0)(x)
-    assert y.shape == x.shape
-
-    y = MultiHeadAttention(d_in=16, d_out=16, context_length=5, dropout=0.0, num_heads=4)(x)
-    assert y.shape == x.shape
+GPT_CONFIG_124M = {
+    "vocab_size": 50257,
+    "context_length": 1024,
+    "emb_dim": 768,
+    "n_heads": 12,
+    "n_layers": 12,
+    "drop_rate": 0.0,    # 0 for testing (deterministic)
+    "qkv_bias": False,
+    "kv_window_size": 1024   # NEW: KV cache window size
+}
 
 
-def test_causal_means_future_does_not_change_past():
-    torch.manual_seed(0)
-    b, t, d, h = 2, 6, 32, 4
+def test_layer_norm():
+    ln = LayerNorm(768)
+    x = torch.randn(2, 5, 768)
+    y = ln(x)
+    assert y.shape == (2, 5, 768), f"Expected (2,5,768), got {y.shape}"
+    # After normalization the mean should be ~0
+    assert y.mean(dim=-1).abs().max() < 0.01
 
-    x1 = torch.randn(b, t, d)
-    x2 = x1.clone()
-    x2[:, -1, :] += 10.0  # change the FUTURE token a lot
 
-    # If causal masking is correct, earlier outputs should not change.
-    attn = MultiHeadAttention(d_in=d, d_out=d, context_length=t, dropout=0.0, num_heads=h)
-    y1 = attn(x1)
-    y2 = attn(x2)
+def test_feedforward():
+    cfg = GPT_CONFIG_124M
+    ff = FeedForward(cfg)
+    x = torch.randn(2, 5, 768)
+    y = ff(x)
+    assert y.shape == (2, 5, 768), f"Expected (2,5,768), got {y.shape}"
 
-    # Compare all positions except the last one
-    assert_close(y1[:, :-1, :], y2[:, :-1, :])
+
+def test_transformer_block():
+    cfg = GPT_CONFIG_124M
+    block = TransformerBlock(cfg)
+    x = torch.randn(2, 5, 768)
+    y = block(x)
+    assert y.shape == (2, 5, 768), f"Expected (2,5,768), got {y.shape}"
+
+
+def test_gpt_model():
+    cfg = GPT_CONFIG_124M
+    model = GPTModel(cfg)
+    idx = torch.randint(0, 50257, (2, 10))
+    logits = model(idx)
+    assert logits.shape == (2, 10, 50257), f"Expected (2,10,50257), got {logits.shape}"
+
+    # Parameter count (before weight tying)
+    total = sum(p.numel() for p in model.parameters())
+    assert 160_000_000 < total < 170_000_000, f"Expected ~163M params, got {total:,}"
+
+
+def test_generation():
+    torch.manual_seed(42)
+    cfg = GPT_CONFIG_124M.copy()
+    cfg["n_layers"] = 2        # small model for speed
+    cfg["context_length"] = 64
+    model = GPTModel(cfg)
+    model.eval()
+
+    idx = torch.tensor([[50256]])  # BOS token
+    out = generate_text_simple_cached(model, idx, max_new_tokens=5, context_size=64)
+    assert out.shape == (1, 6), f"Expected (1,6), got {out.shape}"
+    assert out[0, 0].item() == 50256  # first token preserved
 
 
 if __name__ == "__main__":
-    test_shapes()
-    test_causal_means_future_does_not_change_past()
-    print("✅ Quick tests passed")
+    test_layer_norm()
+    test_feedforward()
+    test_transformer_block()
+    test_gpt_model()
+    test_generation()
+    print("✅ All quick tests passed")

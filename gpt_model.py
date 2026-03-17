@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import tiktoken
+import time
 
 from tokenization import GPTDatasetV1
 from attention import MultiHeadAttention
@@ -53,17 +54,19 @@ class TransformerBlock(nn.Module):
             context_length=cfg["context_length"],
             num_heads=cfg["n_heads"],
             dropout=cfg["drop_rate"],
-            qkv_bias=cfg["qkv_bias"])
+            qkv_bias=cfg["qkv_bias"],
+            window_size=cfg["kv_window_size"] if "kv_window_size" in cfg else cfg["context_length"]   # NEW
+            )
         self.ff = FeedForward(cfg)
         self.norm1 = LayerNorm(cfg["emb_dim"])
         self.norm2 = LayerNorm(cfg["emb_dim"])
         self.drop_shortcut = nn.Dropout(cfg["drop_rate"])
 
-    def forward(self, x):
+    def forward(self, x, use_cache=False):
         # Shortcut connection for attention block
         shortcut = x
         x = self.norm1(x)
-        x = self.att(x)   # Shape [batch_size, num_tokens, emb_size]
+        x = self.att(x, use_cache=use_cache)   # Shape [batch_size, num_tokens, emb_size]
         x = self.drop_shortcut(x)
         x = x + shortcut  # Add the original input back
 
@@ -84,23 +87,64 @@ class GPTModel(nn.Module):
         self.pos_emb = nn.Embedding(cfg["context_length"], cfg["emb_dim"])
         self.drop_emb = nn.Dropout(cfg["drop_rate"])
 
-        self.trf_blocks = nn.Sequential(
-            *[TransformerBlock(cfg) for _ in range(cfg["n_layers"])])
+        # self.trf_blocks = nn.Sequential(
+        #    *[TransformerBlock(cfg) for _ in range(cfg["n_layers"])])
+        ####################################################
+        # NEW
+        self.trf_blocks = nn.ModuleList(
+            [TransformerBlock(cfg) for _ in range(cfg["n_layers"])])
+
+        self.ptr_current_pos = 0
+        ####################################################
 
         self.final_norm = LayerNorm(cfg["emb_dim"])
-        self.out_head = nn.Linear(
-            cfg["emb_dim"], cfg["vocab_size"], bias=False)
+        self.out_head = nn.Linear(cfg["emb_dim"], cfg["vocab_size"], bias=False)
+        self.kv_window_size = cfg["kv_window_size"]  if "kv_window_size" in cfg else cfg["context_length"]
 
-    def forward(self, in_idx):
+    def forward(self, in_idx, use_cache=False):
         batch_size, seq_len = in_idx.shape
         tok_embeds = self.tok_emb(in_idx)
-        pos_embeds = self.pos_emb(torch.arange(seq_len, device=in_idx.device))
+
+        # pos_embeds = self.pos_emb(torch.arange(seq_len, device=in_idx.device))
+
+        ####################################################
+        # NEW
+
+        if use_cache:
+            context_length = self.pos_emb.num_embeddings
+            # to prevent generate more sequence than context_length
+            # since longer than context_length will cause model out of bound error when reading the position embedding
+            assert self.ptr_current_pos + seq_len <= context_length, (
+                f"Position embedding overflow. Want to read {self.ptr_current_pos + seq_len} which excceded size of {context_length}"
+            )
+            pos_ids = torch.arange(self.ptr_current_pos, self.ptr_current_pos + seq_len, device=in_idx.device, dtype=torch.long)
+            self.ptr_current_pos += seq_len
+        else:
+            pos_ids = torch.arange(0, seq_len, device=in_idx.device, dtype=torch.long)
+        pos_embeds = self.pos_emb(pos_ids).unsqueeze(0)
+        ####################################################
+
         x = tok_embeds + pos_embeds  # Shape [batch_size, num_tokens, emb_size]
         x = self.drop_emb(x)
-        x = self.trf_blocks(x)
+
+        # x = self.trf_blocks(x)
+        ####################################################
+        # NEW
+        for blk in self.trf_blocks:
+            x = blk(x, use_cache=use_cache)
+        ####################################################
+
         x = self.final_norm(x)
         logits = self.out_head(x)
         return logits
+
+    ####################################################
+    # NEW
+    def reset_kv_cache(self):
+        for blk in self.trf_blocks:
+            blk.att.reset_cache()
+        self.ptr_current_pos = 0
+    ####################################################
 
 
 def generate_text_simple(model, idx, max_new_tokens, context_size):
@@ -128,6 +172,44 @@ def generate_text_simple(model, idx, max_new_tokens, context_size):
 
     return idx
 
+####################################################
+# NEW
+def generate_text_simple_cached(model, idx, max_new_tokens, context_size=None, use_cache=True):
+    model.eval()
+
+    ctx_len = context_size or model.pos_emb.num_embeddings
+    kv_window_size = model.kv_window_size
+
+    with torch.no_grad():
+        if use_cache:
+            model.reset_kv_cache()
+
+            input_tokens = idx[:, -ctx_len:]
+            input_tokens_length = input_tokens.size(1)
+
+            # prefill to handle input_tokens_length > kv_window_size
+            for i in range(0, input_tokens_length, kv_window_size):
+                chunk = input_tokens[:, i:i+kv_window_size]
+                logits = model(chunk, use_cache=True)
+
+            # can't generate more than ctx_len of result
+            # due to the limitation of position embedding
+            max_generable = ctx_len - input_tokens_length
+            max_new_tokens = min(max_new_tokens, max_generable)
+
+            for _ in range(max_new_tokens):
+                next_idx = logits[:, -1].argmax(dim=-1, keepdim=True)
+                idx = torch.cat([idx, next_idx], dim=1)
+                logits = model(next_idx, use_cache=True)
+        else:
+            for _ in range(max_new_tokens):
+                logits = model(idx[:, -ctx_len:], use_cache=False)
+                next_idx = logits[:, -1].argmax(dim=-1, keepdim=True)
+                idx = torch.cat([idx, next_idx], dim=1)
+
+    return idx
+####################################################
+
 
 def main():
     GPT_CONFIG_124M = {
@@ -137,36 +219,64 @@ def main():
         "n_heads": 12,          # Number of attention heads
         "n_layers": 12,         # Number of layers
         "drop_rate": 0.1,       # Dropout rate
-        "qkv_bias": False       # Query-Key-Value bias
+        "qkv_bias": False,       # Query-Key-Value bias
+        "kv_window_size": 1024   # NEW: KV cache window size
     }
 
     torch.manual_seed(123)
     model = GPTModel(GPT_CONFIG_124M)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
     model.eval()  # disable dropout
 
     start_context = "Hello, I am"
 
     tokenizer = tiktoken.get_encoding("gpt2")
     encoded = tokenizer.encode(start_context)
-    encoded_tensor = torch.tensor(encoded).unsqueeze(0)
+    encoded_tensor = torch.tensor(encoded, device=device).unsqueeze(0)
 
     print(f"\n{50*'='}\n{22*' '}IN\n{50*'='}")
     print("\nInput text:", start_context)
     print("Encoded input text:", encoded)
     print("encoded_tensor.shape:", encoded_tensor.shape)
 
-    out = generate_text_simple(
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
+    start = time.time()
+
+    # token_ids = generate_text_simple(
+    #     model=model,
+    #     idx=encoded_tensor,
+    #     max_new_tokens=200,
+    #     context_size=GPT_CONFIG_124M["context_length"]
+    # )
+
+    ####################################################
+    # NEW
+    token_ids = generate_text_simple_cached(
         model=model,
         idx=encoded_tensor,
-        max_new_tokens=10,
-        context_size=GPT_CONFIG_124M["context_length"]
+        max_new_tokens=200,
     )
-    decoded_text = tokenizer.decode(out.squeeze(0).tolist())
+    ####################################################
+
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
+    total_time = time.time() - start
+
+    decoded_text = tokenizer.decode(token_ids.squeeze(0).tolist())
 
     print(f"\n\n{50*'='}\n{22*' '}OUT\n{50*'='}")
-    print("\nOutput:", out)
-    print("Output length:", len(out[0]))
+    print("\nOutput:", token_ids)
+    print("Output length:", len(token_ids[0]))
     print("Output text:", decoded_text)
+
+    print(f"\nTime: {total_time:.2f} sec")
+    print(f"{int(len(token_ids[0])/total_time)} tokens/sec")
+    if torch.cuda.is_available():
+        max_mem_bytes = torch.cuda.max_memory_allocated()
+        max_mem_gb = max_mem_bytes / (1024 ** 3)
+        print(f"Max memory allocated: {max_mem_gb:.2f} GB")
 
 
 if __name__ == "__main__":
