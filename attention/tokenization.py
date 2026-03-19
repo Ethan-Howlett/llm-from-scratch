@@ -37,7 +37,7 @@ class GPTDatasetV1(Dataset):
 
         # Tokenize the entire text
         token_ids = tokenizer.encode(txt, allowed_special={"<|endoftext|>"})
-        assert len(token_ids) >= max_length, 'Number of tokenized inputs must at least be equal to max_length'
+        assert len(token_ids) >= max_length, f'Number of tokenized inputs must at least be equal to max_length: {len(token_ids)} < {max_length}'
 
         # Use a sliding window to chunk the txt into overlapping sequences of max_length
         for i in range(0, len(token_ids) - max_length, stride):

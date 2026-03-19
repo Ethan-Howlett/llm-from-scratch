@@ -1,10 +1,14 @@
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import torch
 import torch.nn as nn
 import tiktoken
 import time
 
-from tokenization import GPTDatasetV1
-from attention import MultiHeadAttention
+from attention.tokenization import GPTDatasetV1
+from attention.attention import MultiHeadAttention
 
 
 class LayerNorm(nn.Module):
@@ -37,7 +41,7 @@ class FeedForward(nn.Module):
         super().__init__()
         self.layers = nn.Sequential(
             nn.Linear(cfg["emb_dim"], 4 * cfg["emb_dim"]),
-            GELU(),
+            nn.GELU(approximate="tanh"),
             nn.Linear(4 * cfg["emb_dim"], cfg["emb_dim"]),
         )
 
@@ -226,6 +230,7 @@ def main():
     torch.manual_seed(123)
     model = GPTModel(GPT_CONFIG_124M)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # device = "cpu"
     model.to(device)
     model.eval()  # disable dropout
 
