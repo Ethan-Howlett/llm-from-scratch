@@ -1,6 +1,10 @@
 <<<<<<< HEAD
 # My files
 assignments/
+gpt2-small-124M.pth
+gpt2-medium-355M.pth
+gpt2-large-774M.pth
+gpt2-xl-1558M.pth
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
