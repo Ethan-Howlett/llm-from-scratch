@@ -1,0 +1,232 @@
+example_id,text,label
+EX-0148,I need to update my password for security reasons,password_reset
+EX-1033,I tried cancelling but the button does not work,cancel_subscription
+EX-1250,I want to switch from credit card to debit card,update_payment
+EX-0944,Where is the option to cancel my subscription,cancel_subscription
+EX-0680,I am seeing an account locked message,account_locked
+EX-0238,I want to know why I was charged this amount,billing_refund
+EX-0215,I need to update my password for security reasons,password_reset
+EX-0648,I ordered express shipping but it is taking too long,shipping_delay
+EX-1295,I need to update my card on file,update_payment
+EX-1502,The dropdown menu is not showing any options,technical_bug
+EX-0496,My shipment has been in the same location for a week,shipping_delay
+EX-0477,My shipment has been in the same location for a week,shipping_delay
+EX-0075,Where do I go to change my password,password_reset
+EX-0141,The reset email never arrived in my inbox,password_reset
+EX-0406,I was charged twice this month,billing_refund
+EX-1383,The dark mode toggle breaks the layout,technical_bug
+EX-0516,My package seems to be stuck in transit,shipping_delay
+EX-0486,Is there a way to expedite my delayed order,shipping_delay
+EX-0549,My order still has not arrived,shipping_delay
+EX-0009,Password reset keeps timing out,password_reset
+EX-1067,How do I cancel my membership,cancel_subscription
+EX-0152,I need to update my password for security reasons,password_reset
+EX-0461,My package seems to be stuck in transit,shipping_delay
+EX-1517,The page keeps loading and never finishes,technical_bug
+EX-0512,I need to change my delivery address for a delayed order,shipping_delay
+EX-1393,The search function returns no results for anything,technical_bug
+EX-0539,I paid for fast shipping and it is still not here,shipping_delay
+EX-0082,Where do I go to change my password,password_reset
+EX-1533,The search function returns no results for anything,technical_bug
+EX-0699,Please remove the lock from my profile,account_locked
+EX-0538,The carrier says they cannot find my package,shipping_delay
+EX-1246,Can I set a different default payment method,update_payment
+EX-1220,I need to remove my old card and add a new one,update_payment
+EX-1160,How do I update the expiration date on my card,update_payment
+EX-1306,My payment failed how can I add a new card,update_payment
+EX-1385,The page keeps loading and never finishes,technical_bug
+EX-0646,I need to change my delivery address for a delayed order,shipping_delay
+EX-0033,I want to set up a stronger password,password_reset
+EX-0922,The cancel button is not showing on my account page,cancel_subscription
+EX-0711,My account has been locked for hours now,account_locked
+EX-0812,I got locked out after entering the wrong password,account_locked
+EX-1180,The system is not accepting my new card number,update_payment
+EX-0904,The cancel button is not showing on my account page,cancel_subscription
+EX-0050,I tried resetting but the page gives an error,password_reset
+EX-1199,I want to change the billing address for my card,update_payment
+EX-0673,My account got locked and I cannot do anything,account_locked
+EX-0602,Can you resend my order since shipping is taking so long,shipping_delay
+EX-0084,I locked myself out after too many wrong passwords,password_reset
+EX-0697,My account was locked after failed attempts,account_locked
+EX-1290,Please help me add a backup payment method,update_payment
+EX-0871,Please unlock my account,account_locked
+EX-0893,The cancel button is not showing on my account page,cancel_subscription
+EX-0175,Can someone help me recover my account password,password_reset
+EX-1367,Images are not displaying on the product page,technical_bug
+EX-0495,I need an update on my order delivery,shipping_delay
+EX-1017,The cancel button is not showing on my account page,cancel_subscription
+EX-0311,The wrong amount was billed to my card,billing_refund
+EX-0813,I cannot access my account it says temporarily locked,account_locked
+EX-0756,My account was locked due to suspicious activity,account_locked
+EX-1233,I want to change the billing address for my card,update_payment
+EX-1226,My bank issued a replacement card I need to update,update_payment
+EX-0452,My package was marked delivered but I never received it,shipping_delay
+EX-0364,Please reverse the incorrect billing on my account,billing_refund
+EX-1108,Can I update my payment to use PayPal instead,update_payment
+EX-1210,Please help me add a backup payment method,update_payment
+EX-0521,My delivery was supposed to arrive yesterday,shipping_delay
+EX-1143,The saved payment method needs to be updated urgently,update_payment
+EX-0753,My account got locked and I cannot do anything,account_locked
+EX-1053,Stop charging my card I want to cancel,cancel_subscription
+EX-0503,My order still has not arrived,shipping_delay
+EX-0996,How do I end my subscription before it renews,cancel_subscription
+EX-0803,I cannot log in because of an account security hold,account_locked
+EX-0940,I tried cancelling but the button does not work,cancel_subscription
+EX-0231,I want to know why I was charged this amount,billing_refund
+EX-0188,Password reset link is not working,password_reset
+EX-1528,I found a bug on the checkout page,technical_bug
+EX-1144,How do I update the expiration date on my card,update_payment
+EX-0816,My account has been locked for hours now,account_locked
+EX-0359,I received a charge but never placed an order,billing_refund
+EX-1344,The search function returns no results for anything,technical_bug
+EX-0650,The delivery status says exception what does that mean,shipping_delay
+EX-1408,The search function returns no results for anything,technical_bug
+EX-0836,My account was locked due to suspicious activity,account_locked
+EX-1301,How do I switch to a different payment method,update_payment
+EX-1181,How do I switch to a different payment method,update_payment
+EX-0565,The carrier says they cannot find my package,shipping_delay
+EX-0791,I got locked out after entering the wrong password,account_locked
+EX-1112,My payment keeps failing because the card is old,update_payment
+EX-0160,I want to set up a stronger password,password_reset
+EX-0047,The reset email never arrived in my inbox,password_reset
+EX-0187,Where do I go to change my password,password_reset
+EX-0259,How do I dispute a charge on my account,billing_refund
+EX-1429,The app crashes when I open settings,technical_bug
+EX-0781,My account was locked due to suspicious activity,account_locked
+EX-0283,I want to know why I was charged this amount,billing_refund
+EX-0205,Can you manually reset my password please,password_reset
+EX-0484,My package seems to be stuck in transit,shipping_delay
+EX-0719,My account was locked due to suspicious activity,account_locked
+EX-0295,I received a charge but never placed an order,billing_refund
+EX-0074,How long does the password reset link last,password_reset
+EX-1163,I want to pay with a different card,update_payment
+EX-0643,My package was marked delivered but I never received it,shipping_delay
+EX-0961,Please process my cancellation request right away,cancel_subscription
+EX-0582,My shipment has been in the same location for a week,shipping_delay
+EX-0684,Can an admin please unlock my account,account_locked
+EX-1030,Can I cancel and get a prorated refund,cancel_subscription
+EX-1317,I want to switch from credit card to debit card,update_payment
+EX-0021,The system says my password does not meet requirements,password_reset
+EX-1363,The mobile app freezes when I scroll through my feed,technical_bug
+EX-1167,I need to remove my old card and add a new one,update_payment
+EX-0028,The reset email never arrived in my inbox,password_reset
+EX-0247,Billing error I need a refund,billing_refund
+EX-1223,My card was compromised and I need to replace it,update_payment
+EX-1510,The form resets when I click submit,technical_bug
+EX-0204,Password reset keeps timing out,password_reset
+EX-0248,I was overcharged for my last order,billing_refund
+EX-0007,I tried resetting but the page gives an error,password_reset
+EX-1059,The cancel button is not showing on my account page,cancel_subscription
+EX-1114,I need to update my card on file,update_payment
+EX-1326,Images are not displaying on the product page,technical_bug
+EX-0133,I changed my password but it still does not work,password_reset
+EX-1097,I want to downgrade and eventually cancel my plan,cancel_subscription
+EX-1461,I get a 500 error when I try to access my orders,technical_bug
+EX-1078,Please cancel my account and stop all charges,cancel_subscription
+EX-1404,The page keeps loading and never finishes,technical_bug
+EX-0631,The delivery status says exception what does that mean,shipping_delay
+EX-1270,The system is not accepting my new card number,update_payment
+EX-0851,My account was locked after failed attempts,account_locked
+EX-1382,Images are not displaying on the product page,technical_bug
+EX-0829,The system locked me out for no reason,account_locked
+EX-0945,How do I cancel my membership,cancel_subscription
+EX-0358,How do I dispute a charge on my account,billing_refund
+EX-0202,Where do I go to change my password,password_reset
+EX-0879,I cannot log in because of an account security hold,account_locked
+EX-0826,How long will my account stay locked,account_locked
+EX-1457,My data is not syncing between desktop and mobile,technical_bug
+EX-1361,The export function generates a corrupted file,technical_bug
+EX-0051,The system says my password does not meet requirements,password_reset
+EX-0505,Shipping is delayed and tracking has not updated,shipping_delay
+EX-0866,The account lockout is preventing me from working,account_locked
+EX-0544,My delivery was supposed to arrive yesterday,shipping_delay
+EX-1187,Please change my billing method,update_payment
+EX-0146,I tried resetting but the page gives an error,password_reset
+EX-0835,Can an admin please unlock my account,account_locked
+EX-1522,The export function generates a corrupted file,technical_bug
+EX-0137,My password expired and I need a new one,password_reset
+EX-1409,I found a bug on the checkout page,technical_bug
+EX-0161,Please send me a password recovery link,password_reset
+EX-0206,Password reset link is not working,password_reset
+EX-0523,Can you check the status of my shipment,shipping_delay
+EX-1041,Please stop renewing my subscription,cancel_subscription
+EX-0865,I need urgent access to my locked account,account_locked
+EX-0533,I ordered express shipping but it is taking too long,shipping_delay
+EX-0964,I want to stop my recurring payments,cancel_subscription
+EX-0855,How do I unlock my account after too many tries,account_locked
+EX-1141,Can I update my payment to use PayPal instead,update_payment
+EX-0263,Please help me request a refund for an accidental charge,billing_refund
+EX-0363,How do I dispute a charge on my account,billing_refund
+EX-0802,My account has been locked for hours now,account_locked
+EX-0841,I need urgent access to my locked account,account_locked
+EX-1515,Auto save is not working and I lost my changes,technical_bug
+EX-0658,I need an update on my order delivery,shipping_delay
+EX-0661,I am seeing an account locked message,account_locked
+EX-0795,Please unlock my account,account_locked
+EX-0504,I ordered express shipping but it is taking too long,shipping_delay
+EX-0140,I want to set up a stronger password,password_reset
+EX-1294,The card on my account has expired,update_payment
+EX-1130,Can I set a different default payment method,update_payment
+EX-0574,My package seems to be stuck in transit,shipping_delay
+EX-0136,How do I reset my account password,password_reset
+EX-1465,Auto save is not working and I lost my changes,technical_bug
+EX-1345,There is a display glitch on the dashboard,technical_bug
+EX-0147,How long does the password reset link last,password_reset
+EX-1432,The form resets when I click submit,technical_bug
+EX-1318,Where can I change my stored payment information,update_payment
+EX-0733,How long will my account stay locked,account_locked
+EX-0480,When will my order finally be delivered,shipping_delay
+EX-1319,I need to update my card on file,update_payment
+EX-1506,The dropdown menu is not showing any options,technical_bug
+EX-0180,Please send me a password recovery link,password_reset
+EX-0930,I want to cancel my monthly plan,cancel_subscription
+EX-0083,My temporary password is not being accepted,password_reset
+EX-0630,The carrier says they cannot find my package,shipping_delay
+EX-0443,My package was marked delivered but I never received it,shipping_delay
+EX-1534,Videos do not play they just show a black screen,technical_bug
+EX-1480,There is a display glitch on the dashboard,technical_bug
+EX-0839,How do I unlock my account after too many tries,account_locked
+EX-0831,I cannot log in because of an account security hold,account_locked
+EX-0513,The delivery status says exception what does that mean,shipping_delay
+EX-0943,Stop charging my card I want to cancel,cancel_subscription
+EX-0942,How do I end my subscription before it renews,cancel_subscription
+EX-0330,Your system double billed me again,billing_refund
+EX-0537,Shipping is delayed and tracking has not updated,shipping_delay
+EX-0427,The wrong amount was billed to my card,billing_refund
+EX-0286,I need a refund for a service I did not use,billing_refund
+EX-1475,My data is not syncing between desktop and mobile,technical_bug
+EX-0341,I received a charge but never placed an order,billing_refund
+EX-0179,My temporary password is not being accepted,password_reset
+EX-1011,Where is the option to cancel my subscription,cancel_subscription
+EX-1031,I tried cancelling but the button does not work,cancel_subscription
+EX-1381,Feature is not working as expected,technical_bug
+EX-0069,I cannot remember my login credentials,password_reset
+EX-1278,I want to pay with a different card,update_payment
+EX-1358,The search function returns no results for anything,technical_bug
+EX-1514,The page keeps loading and never finishes,technical_bug
+EX-0747,The lock on my account has not been removed yet,account_locked
+EX-1146,My payment keeps failing because the card is old,update_payment
+EX-0556,My package was marked delivered but I never received it,shipping_delay
+EX-0232,I received a charge but never placed an order,billing_refund
+EX-0568,My package was marked delivered but I never received it,shipping_delay
+EX-1532,My data is not syncing between desktop and mobile,technical_bug
+EX-0340,I need a refund for a service I did not use,billing_refund
+EX-1415,My data is not syncing between desktop and mobile,technical_bug
+EX-0445,My order still has not arrived,shipping_delay
+EX-1231,How do I switch to a different payment method,update_payment
+EX-1410,The dropdown menu is not showing any options,technical_bug
+EX-0228,The wrong amount was billed to my card,billing_refund
+EX-0962,I no longer need this service please cancel it,cancel_subscription
+EX-0395,The wrong amount was billed to my card,billing_refund
+EX-0465,The carrier says they cannot find my package,shipping_delay
+EX-1426,The dropdown menu is not showing any options,technical_bug
+EX-1107,Please help me add a backup payment method,update_payment
+EX-1268,I want to switch from credit card to debit card,update_payment
+EX-1252,I need to remove my old card and add a new one,update_payment
+EX-0570,I need to change my delivery address for a delayed order,shipping_delay
+EX-0667,I verified my identity but my account is still locked,account_locked
+EX-0929,I want to stop my recurring payments,cancel_subscription
+EX-0380,Your system double billed me again,billing_refund
+EX-1412,The notification system is sending duplicate alerts,technical_bug
+EX-0971,I want to downgrade and eventually cancel my plan,cancel_subscription
+EX-0909,I want to stop my recurring payments,cancel_subscription

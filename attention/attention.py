@@ -69,14 +69,14 @@ class MultiHeadAttention(nn.Module):
         self.W_value = nn.Linear(d_in, d_out, bias=qkv_bias)
         self.out_proj = nn.Linear(d_out, d_out)
         self.dropout = nn.Dropout(dropout)
-        # self.register_buffer('mask', torch.triu(torch.ones(context_length, context_length), diagonal=1))
+        self.register_buffer('mask', torch.triu(torch.ones(context_length, context_length), diagonal=1))
 
         ####################################################
         # CACHING
-        self.max_seq_len = max_seq_len or context_length
-        self.window_size = window_size or self.max_seq_len
-        self.register_buffer("cache_k", None, persistent=False)
-        self.register_buffer("cache_v", None, persistent=False)
+        # self.max_seq_len = max_seq_len or context_length
+        # self.window_size = window_size or self.max_seq_len
+        # self.register_buffer("cache_k", None, persistent=False)
+        # self.register_buffer("cache_v", None, persistent=False)
         ####################################################
 
     def forward(self, x, use_cache=False):

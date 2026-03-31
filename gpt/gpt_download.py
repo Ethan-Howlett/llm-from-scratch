@@ -28,13 +28,14 @@ def download_and_load_gpt2(model_size, models_dir=None, base_config=None) -> GPT
     if model_size not in allowed_sizes:
         raise ValueError(f"Model size not in allowed sizes: {allowed_sizes}")
 
-    # Define paths
-    model_size = model_size.replace(" ", "-").replace("(", "").replace(")", "")
-    model_dir = os.path.join(models_dir, f"{model_size}.pth")
+    # File stem differs from config keys used in load_gpt2's model_configs
+    file_stem = model_size.replace(" ", "-").replace("(", "").replace(")", "")
+    model_path = os.path.join(models_dir, f"{file_stem}.pth")
     base_url = "https://huggingface.co/rasbt/gpt2-from-scratch-pytorch/resolve/main/"
 
-    download_file(base_url + f"{model_size}.pth", model_dir)
-    return load_gpt2(model_size, models_dir)
+    download_file(base_url + f"{file_stem}.pth", model_path)
+    model, updated_base_config = load_gpt2(model_size, models_dir, base_config=base_config)
+    return model, updated_base_config
 
 
 def download_file(url, destination):
@@ -112,7 +113,7 @@ def load_gpt2(model_size, models_dir=None, base_config=None):
     model = GPTModel(BASE_CONFIG)
     model.load_state_dict(torch.load(model_path, weights_only=True))
     print(f"Model loaded successfully")
-    return model
+    return model, BASE_CONFIG
 
 # CHOOSE_MODEL = "gpt2-medium (355M)"
 # BASE_CONFIG.update(model_configs[CHOOSE_MODEL])
