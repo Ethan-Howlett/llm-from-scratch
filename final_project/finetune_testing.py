@@ -248,6 +248,7 @@ if __name__ == "__main__":
     parser.add_argument('--eval_freq', type=int, default=50)
     parser.add_argument('--eval_iter', type=int, default=5)
     parser.add_argument('--drop_rate', type=float, default=0.0)
+    parser.add_argument('--seed', type=int, default=123)
 
     args = parser.parse_args()
 
@@ -280,7 +281,7 @@ if __name__ == "__main__":
 
     num_workers = 0
     batch_size = args.batch_size
-    torch.manual_seed(123)
+    torch.manual_seed(args.seed)
 
     train_loader = DataLoader(
         dataset=train_dataset,
@@ -343,7 +344,7 @@ if __name__ == "__main__":
         for param in model.parameters():
             param.requires_grad = False
 
-        torch.manual_seed(123)
+        torch.manual_seed(args.seed)
 
         num_classes = train_dataset.num_classes
         model.out_head = torch.nn.Linear(in_features=model_config['emb_dim'], out_features=num_classes)
@@ -360,7 +361,7 @@ if __name__ == "__main__":
         ########################################
 
         start_time = time.time()
-        torch.manual_seed(123)
+        torch.manual_seed(args.seed)
 
         optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 
@@ -387,13 +388,14 @@ if __name__ == "__main__":
             'drop_rate': args.drop_rate,
             'weight_decay': args.weight_decay,
             'balanced': args.balance_dataset,
-            'train_accuracy': train_accs[-1],
-            'val_accuracy': val_accs[-1],
-            'test_accuracy': test_accuracy,
-            'train_loss': train_losses[-1],
-            'val_loss': val_losses[-1],
-            'test_loss': test_loss,
-            'time_minutes': execution_time_minutes,
+            'seed': args.seed,
+            'train_accuracy': round(train_accs[-1], 6),
+            'val_accuracy': round(val_accs[-1], 6),
+            'test_accuracy': round(test_accuracy, 6),
+            'train_loss': round(train_losses[-1], 6),
+            'val_loss': round(val_losses[-1], 6),
+            'test_loss': round(test_loss, 6),
+            'time_minutes': round(execution_time_minutes, 6),
         }
 
         print('RESULTS_JSON:' + json.dumps(results))
