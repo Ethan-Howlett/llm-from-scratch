@@ -1,0 +1,1 @@
+item,model_size,epochs,batch_size,lr,drop_rate,weight_decay,balanced,train_accuracy,val_accuracy,test_accuracy,train_loss,val_loss,test_loss,time_minutes

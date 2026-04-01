@@ -8,15 +8,15 @@ from torch.utils.data import Dataset, DataLoader
 
 SAMPLE_TEXT_FOLDER = "sample_texts"
 
-if not os.path.exists(os.path.join(SAMPLE_TEXT_FOLDER, "the-verdict.txt")):
-    url = "https://raw.githubusercontent.com/rasbt/LLMs-from-scratch/main/ch02/01_main-chapter-code/the-verdict.txt"
-    response = requests.get(url, timeout=30)
-    with open(os.path.join(SAMPLE_TEXT_FOLDER, "the-verdict.txt"), "wb") as f:
-        f.write(response.content)
-    print("Downloaded the-verdict.txt")
+# if not os.path.exists(os.path.join(SAMPLE_TEXT_FOLDER, "the-verdict.txt")):
+#     url = "https://raw.githubusercontent.com/rasbt/LLMs-from-scratch/main/ch02/01_main-chapter-code/the-verdict.txt"
+#     response = requests.get(url, timeout=30)
+#     with open(os.path.join(SAMPLE_TEXT_FOLDER, "the-verdict.txt"), "wb") as f:
+#         f.write(response.content)
+#     print("Downloaded the-verdict.txt")
 
-with open(os.path.join(SAMPLE_TEXT_FOLDER, "the-verdict.txt"), "r", encoding="utf-8") as f:
-    raw_text = f.read()
+# with open(os.path.join(SAMPLE_TEXT_FOLDER, "the-verdict.txt"), "r", encoding="utf-8") as f:
+#     raw_text = f.read()
 
 # print(f"Loaded {len(raw_text)} characters")
 # print(f"Preview: {raw_text[:100]}...")
