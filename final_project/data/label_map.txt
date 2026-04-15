@@ -1,0 +1,7 @@
+0	account_locked
+1	billing_refund
+2	cancel_subscription
+3	password_reset
+4	shipping_delay
+5	technical_bug
+6	update_payment
