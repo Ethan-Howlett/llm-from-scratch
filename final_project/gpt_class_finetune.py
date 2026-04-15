@@ -26,9 +26,11 @@ class LoRALayer(nn.Module):
         nn.init.kaiming_uniform_(self.A, a=math.sqrt(5))
         self.B = nn.Parameter(torch.zeros(rank, out_dim))
         self.alpha = alpha
+        self.rank = rank
+        self.scaling = alpha / rank
 
     def forward(self, x):
-        x = self.alpha * (x @ self.A @ self.B)
+        x = self.scaling * (x @ self.A @ self.B)
         return x
 
 class LinearWithLoRA(nn.Module):
@@ -52,7 +54,7 @@ class LinearWithLoRAMerged(nn.Module):
 
     def forward(self, x):
         lora = self.lora.A @ self.lora.B
-        combined_weight = self.linear.weight + self.lora.alpha*lora.T
+        combined_weight = self.linear.weight + self.lora.scaling * lora.T
         return nn.functional.linear(x, combined_weight, self.linear.bias)
 
 class SupportDataset(Dataset):
@@ -359,14 +361,12 @@ def train_classifier_simple(model, train_loader, val_loader, optimizer, device, 
 def replace_linear_with_lora(model: GPTModel, rank, alpha, alternative=False):
     for name, module in model.named_children():
         if isinstance(module, nn.Linear):
-            # Replace the Linear layer with LinearWithLoRA
             if alternative:
                 setattr(model, name, LinearWithLoRAMerged(module, rank, alpha))
             else:
                 setattr(model, name, LinearWithLoRA(module, rank, alpha))
         else:
-            # Recursively apply the same function to child modules
-            replace_linear_with_lora(module, rank, alpha)
+            replace_linear_with_lora(module, rank, alpha, alternative=alternative)
 
 def plot_values(epochs_seen, examples_seen, train_values, val_values, label="loss", outfile=None, xlabel="Epochs", xlabel_top="Examples seen"):
     fig, ax1 = plt.subplots(figsize=(5, 3), layout="constrained")
