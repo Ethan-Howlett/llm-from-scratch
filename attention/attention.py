@@ -56,7 +56,7 @@ class CausalAttention(nn.Module):
 
 
 class MultiHeadAttention(nn.Module):
-    def __init__(self, d_in, d_out, context_length, dropout, num_heads, qkv_bias=False, max_seq_len=None, window_size=None):
+    def __init__(self, d_in, d_out, context_length, dropout, num_heads, qkv_bias=False, disable_causal_mask=False, max_seq_len=None, window_size=None):
         super().__init__()
         assert (d_out % num_heads == 0), "d_out must be divisible by num_heads"
 
@@ -69,7 +69,10 @@ class MultiHeadAttention(nn.Module):
         self.W_value = nn.Linear(d_in, d_out, bias=qkv_bias)
         self.out_proj = nn.Linear(d_out, d_out)
         self.dropout = nn.Dropout(dropout)
-        self.register_buffer('mask', torch.triu(torch.ones(context_length, context_length), diagonal=1))
+
+        if not disable_causal_mask:
+            self.register_buffer('mask', torch.triu(torch.ones(context_length, context_length), diagonal=1))
+        self.disable_causal_mask = disable_causal_mask
 
         ####################################################
         # CACHING
@@ -140,28 +143,35 @@ class MultiHeadAttention(nn.Module):
         # Dot product for each head
         attn_scores = queries @ keys.transpose(2, 3)
 
+        if not self.disable_causal_mask:
+            # Original mask truncated to the number of tokens and converted to boolean
+            mask_bool = self.mask.bool()[:num_tokens, :num_tokens]
+
+            # Use the mask to fill attention scores
+            attn_scores.masked_fill_(mask_bool, -torch.inf)
+
         ####################################################
         # NEW
-        K = attn_scores.size(-1)
+        # K = attn_scores.size(-1)
 
-        if num_tokens == K:
-            # No cache → use the pre‑baked triangular mask slice
-            causal_mask = torch.triu(torch.ones(
-                num_tokens, K, device=x.device, dtype=torch.bool), diagonal=1)
-        else:
-            # Cached: need to offset the diagonal by (K − num_tokens)
-            offset = K - num_tokens  # number of tokens already in cache before this chunk
-            row_idx = torch.arange(num_tokens, device=x.device).unsqueeze(
-                1)  # (num_tokens, 1)
-            col_idx = torch.arange(K, device=x.device).unsqueeze(
-                0)           # (1, K)
-            # True where j > i+offset
-            causal_mask = row_idx + offset < col_idx
-        ####################################################
+        # if num_tokens == K:
+        #     # No cache → use the pre‑baked triangular mask slice
+        #     causal_mask = torch.triu(torch.ones(
+        #         num_tokens, K, device=x.device, dtype=torch.bool), diagonal=1)
+        # else:
+        #     # Cached: need to offset the diagonal by (K − num_tokens)
+        #     offset = K - num_tokens  # number of tokens already in cache before this chunk
+        #     row_idx = torch.arange(num_tokens, device=x.device).unsqueeze(
+        #         1)  # (num_tokens, 1)
+        #     col_idx = torch.arange(K, device=x.device).unsqueeze(
+        #         0)           # (1, K)
+        #     # True where j > i+offset
+        #     causal_mask = row_idx + offset < col_idx
+        # ####################################################
 
-        # Use the mask to fill attention scores
-        attn_scores.masked_fill_(
-            causal_mask.unsqueeze(0).unsqueeze(0), -torch.inf)
+        # # Use the mask to fill attention scores
+        # attn_scores.masked_fill_(
+        #     causal_mask.unsqueeze(0).unsqueeze(0), -torch.inf)
 
         attn_weights = torch.softmax(attn_scores / keys.shape[-1]**0.5, dim=-1)
         attn_weights = self.dropout(attn_weights)

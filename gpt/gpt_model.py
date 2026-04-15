@@ -51,7 +51,7 @@ class FeedForward(nn.Module):
 
 
 class TransformerBlock(nn.Module):
-    def __init__(self, cfg):
+    def __init__(self, cfg, disable_causal_mask=False):
         super().__init__()
         self.att = MultiHeadAttention(
             d_in=cfg["emb_dim"],
@@ -60,6 +60,7 @@ class TransformerBlock(nn.Module):
             num_heads=cfg["n_heads"],
             dropout=cfg["drop_rate"],
             qkv_bias=cfg["qkv_bias"],
+            disable_causal_mask=disable_causal_mask,
             window_size=cfg["kv_window_size"] if "kv_window_size" in cfg else cfg["context_length"]   # NEW
             )
         self.ff = FeedForward(cfg)
@@ -86,18 +87,18 @@ class TransformerBlock(nn.Module):
 
 
 class GPTModel(nn.Module):
-    def __init__(self, cfg):
+    def __init__(self, cfg, disable_causal_mask=False):
         super().__init__()
         self.tok_emb = nn.Embedding(cfg["vocab_size"], cfg["emb_dim"])
         self.pos_emb = nn.Embedding(cfg["context_length"], cfg["emb_dim"])
         self.drop_emb = nn.Dropout(cfg["drop_rate"])
 
         # self.trf_blocks = nn.Sequential(
-        #    *[TransformerBlock(cfg) for _ in range(cfg["n_layers"])])
+        #    *[TransformerBlock(cfg, disable_causal_mask=disable_causal_mask) for _ in range(cfg["n_layers"])])
         ####################################################
         # NEW
         self.trf_blocks = nn.ModuleList(
-            [TransformerBlock(cfg) for _ in range(cfg["n_layers"])])
+            [TransformerBlock(cfg, disable_causal_mask=disable_causal_mask) for _ in range(cfg["n_layers"])])
 
         self.ptr_current_pos = 0
         ####################################################

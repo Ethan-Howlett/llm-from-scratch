@@ -6,7 +6,7 @@ import subprocess
 import threading
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
-
+import random
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -125,20 +125,20 @@ REFERENCE = {
     'lr': 5e-5,
     'drop_rate': 0.0,
     'weight_decay': 0.1,
-    'balance_dataset': 1,
+    'balance_dataset': 0,
 }
 
 SWEEPS = {
     'model_size': ['gpt2-medium (355M)'],
     'batch_size': [3, 5, 8, 13],
-    'epochs': [3, 5, 8],
-    'lr': [1e-5, 5e-5, 1e-4],
-    'drop_rate': [0.0, 0.05, 0.1],
-    'weight_decay': [0.05, 0.1, 0.2],
+    'epochs': [3, 4, 5, 8],
+    'lr': [1e-4, 1e-5, 1e-6, 5e-5, 5e-6],
+    'drop_rate': [0.0, 0.05],
+    'weight_decay': [0.1, 0.2],
     'balance_dataset': [0, 1],
 }
 
-SEEDS = [42, 123, 456, 789, 1024]
+SEEDS = [random.randint(1, 1000) for _ in range(30)]
 
 # CSV / CLI use 'balanced'; sweep tag from OFAT is 'balance_dataset'.
 SWEEP_PARAM_TO_CSV_COL: dict[str, str] = {'balance_dataset': 'balanced'}

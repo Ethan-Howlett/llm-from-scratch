@@ -377,7 +377,11 @@ if __name__ == "__main__":
         print(f'Training completed in {execution_time_minutes:.2f} minutes.')
 
         # Compute final test metrics
+        train_accuracy = calc_accuracy_loader(train_loader, model, device)
+        val_accuracy = calc_accuracy_loader(val_loader, model, device)
         test_accuracy = calc_accuracy_loader(test_loader, model, device)
+        train_loss = calc_loss_loader(train_loader, model, device)
+        val_loss = calc_loss_loader(val_loader, model, device)
         test_loss = calc_loss_loader(test_loader, model, device)
 
         results = {
@@ -389,11 +393,11 @@ if __name__ == "__main__":
             'weight_decay': args.weight_decay,
             'balanced': args.balance_dataset,
             'seed': args.seed,
-            'train_accuracy': round(train_accs[-1], 6),
-            'val_accuracy': round(val_accs[-1], 6),
+            'train_accuracy': round(train_accuracy, 6),
+            'val_accuracy': round(val_accuracy, 6),
             'test_accuracy': round(test_accuracy, 6),
-            'train_loss': round(train_losses[-1], 6),
-            'val_loss': round(val_losses[-1], 6),
+            'train_loss': round(train_loss, 6),
+            'val_loss': round(val_loss, 6),
             'test_loss': round(test_loss, 6),
             'time_minutes': round(execution_time_minutes, 6),
         }
